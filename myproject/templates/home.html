@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Boards</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    {% block breadcrumb %}
+        <li class="breadcrumb-item">Welcome to the discussion board </li>
+    {% endblock %}
+
+    {% block content %}
+    <div class="container mt-4">
+      <div class="card">
+        <div class="card-header">
+          <h4>Discussion Boards</h4>
+        </div>
+        <div class="card-body">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Board</th>
+                <th>Posts</th>
+                <th>Topics</th>
+                <th>Last Post</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for board in boards %}
+                <tr>
+                  <td>
+                    <h6><a href="{% url 'board_topics' board.pk %}">{{ board.name }}</a></h6>
+                    <small class="text-muted d-block">{{ board.description }}</small>
+                  </td>
+                  <td class="align-middle">{{ board.posts_count }}</td>
+                  <td class="align-middle">{{ board.topics_count }}</td>
+                  <td class="align-middle">{{ board.last_post_date }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <nav aria-label="Boards pagination">
+          <ul class="pagination justify-content-center">
+            {% if boards.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ boards.previous_page_number }}">Previous</a>
+              </li>
+            {% endif %}
+            {% for num in boards.paginator.page_range %}
+              {% if boards.number == num %}
+                <li class="page-item active" aria-current="page">
+                  <span class="page-link">{{ num }} <span class="sr-only">(current)</span></span>
+                </li>
+              {% else %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+            {% if boards.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ boards.next_page_number }}">Next</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>
